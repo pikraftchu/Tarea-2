@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_IP_LEN 40
+#define MAX_COMMAND_LEN 100
+#define MAX_LINE_LEN 255
+#define println() printf("\n")
+ 
+void leerArchivo(const char *archivo);
+void arrancarPing(const char *ip);
+ 
+int main(void)
+{
+    char opcion;
+    char archivo[MAX_LINE_LEN];
+ 
+    printf("Seleccione la opción que desea realizar: \n\n"
+        "a. Una función que lea el contenido de un archivo .txt con diferentes direcciones ip, en la que la ruta del archivo se solicitará al usuario por pantalla. La ruta y nombre del archivo tienen que ser preguntados al usuario y visualizados por pantalla. Por último, el programa debe lanzar un ping para cada una de las direcciones ip del archivo e informar cuales de ellas responden correctamente a este comando."
+        "b. Sin desarrollar.\n\n"
+        "c. Sin desarrollar.\n\n"
+        "d. Salir del programa. \n\n");
+    scanf("%c", &opcion);
+ 
+    while (opcion != 'a' && opcion != 'A' && opcion != 'b' && opcion != 'B' && opcion != 'c' && opcion != 'C' && opcion != 'd' && opcion != 'D')
+    {
+        printf("Opción incorrecta, eliga una de las opciones disponibles. (a,b,c o d).\n");
+        fflush(stdin);
+        scanf("%c", &opcion);
+    }
+ 
+    switch (opcion)
+    {
+        case 'a':
+        case 'A':
+            printf("\n Introduce la ruta del archivo a leer: \n");
+            println();
+            scanf("%s", archivo);
+            println();
+            leerArchivo(archivo);
+            break;
+        case 'b':
+        case 'B':
+            printf("Prueba de funcionamiento opcion B\n");
+            break;
+        case 'c':
+        case 'C':
+            printf("Prueba de funcionamiento opcion C\n");
+            break;
+        case 'd':
+        case 'D':
+            break;
+    }
+ 
+    return 0;
+}
+ 
+void leerArchivo(const char *archivo)
+{
+    FILE * f;
+    char ip[MAX_IP_LEN] = { 0 };
+ 
+    f = fopen(archivo, "rt");
+    if (f == NULL)
+    {
+        printf("Problemas de apertura del archivo\n");
+    }
+    else
+    {
+        while (fgets(ip, MAX_IP_LEN, f))
+        {
+            arrancarPing(ip);
+        }
+ 
+        fclose(f);
+    }
+}
+ 
+void arrancarPing(const char *ip)
+{
+    char line[MAX_LINE_LEN] = { 0 };
+    char command[MAX_COMMAND_LEN] = { 0 };
+    FILE * fp;
+ 
+    snprintf(command, MAX_COMMAND_LEN, "ping %s", ip);
+    fp = popen(command, "r");
+    if (fp == NULL)
+    {
+        /*Handle error */
+        return;
+    }
+ 
+    while (fgets(line, MAX_LINE_LEN, fp) != NULL)
+    {
+       
+        printf("%s", line);
+    }
+ 
+    pclose(fp);
+}
